@@ -71,7 +71,7 @@ if ~ft_hastoolbox('spm') && isempty(spmversion)
 end
 
 %% ensure that the input data is consistent
-if isnumeric(dat)
+if isnumeric(dat) || islogical(dat)
   % convert the data to a structure according to FT_DATATYPE_VOLUME and FT_READ_MRI
   mri.anatomy = dat;
   mri.dim     = size(dat);
@@ -105,6 +105,8 @@ elseif ft_datatype(dat, 'volume')
   if ~isempty(coordsys)
     % convert it to the specified coordinate system, this will also interactively determine the coordinate system if required
     mri = ft_convert_coordsys(mri, coordsys);
+  elseif ~isfield(mri, 'coordsys')
+    mri.coordsys = 'unknown';
   end
 else
   ft_error('unsupported input data');
