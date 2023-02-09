@@ -63,6 +63,8 @@ else
   % write boolean as 'True' or 'False'
   if isempty(val)
     val = 'n/a';
+  elseif isstruct(val)
+    val = 'n/a';
   elseif isnan(val)
     val = 'n/a';
   elseif islogical(val)
