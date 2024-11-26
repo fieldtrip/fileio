@@ -1103,9 +1103,14 @@ switch fileformat
     end
 
   case 'vtk'
-    [pos, tri] = read_vtk(filename);
+    [pos, tri, attr] = read_vtk(filename);
     shape.pos = pos;
-    shape.tri = tri;
+    if ~isempty(tri)
+      shape.tri = tri;
+    end
+    if ~isempty(attr)
+      shape.data = attr;
+    end
 
   case 'vtk_xml'
     data = read_vtk_xml(filename);
