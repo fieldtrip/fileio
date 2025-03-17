@@ -1385,13 +1385,17 @@ switch fileformat
       end
     end
 
+    hastri = isfield(shape, 'tri');
+    hastet = isfield(shape, 'tet');
+    
     if isempty(meshtype)
-      if isfield(shape, 'tri') && ~isfield(shape, 'tet')
-        meshtype = 'tri';
-      elseif ~isfield(shape, 'tri') && isfield(shape, 'tet')
+      if hastri && hastet
+        ft_warning('mesh has both tri and tet, returning tet');
         meshtype = 'tet';
-      else
-        ft_error('please specify meshtype as tri, tet or hex')
+      elseif hastet
+        meshtype = 'tet';
+      elseif hastri
+        meshtype = 'tri';
       end
     end
 
@@ -1648,13 +1652,19 @@ if (hastri+hastet+hashex)>1
   % there are multiple types of meshes
   % this also allows for specifications like 'tri+tet'
   if  hastri && ~strcmp(meshtype, 'tri')
-    ft_warning('removing surface mesh (tri), use the ''meshtype'' option to keep it')
+    if isempty(meshtype)
+      ft_warning('removing surface mesh (tri), use the ''meshtype'' option to keep it')
+    end
     shape = removefields(shape, 'tri');
   elseif hastet && ~strcmp(meshtype, 'tet')
-    ft_warning('removing tetrahedral mesh (tet), use the ''meshtype'' option to keep it')
+    if isempty(meshtype)
+      ft_warning('removing tetrahedral mesh (tet), use the ''meshtype'' option to keep it')
+    end
     shape = removefields(shape, 'tet');
   elseif hashex && ~strcmp(meshtype, 'hex')
-    ft_warning('removing hexahedral mesh (hex), use the ''meshtype'' option to keep it')
+    if isempty(meshtype)
+      ft_warning('removing hexahedral mesh (hex), use the ''meshtype'' option to keep it')
+    end
     shape = removefields(shape, 'hex');
   end
 
